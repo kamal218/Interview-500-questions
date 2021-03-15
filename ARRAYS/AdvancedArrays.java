@@ -27,6 +27,17 @@ public class AdvancedArrays {
         // int ans = maxProductOfThreeNumbers();
         // int ans=largestAtLeastTwice();
         // int[] ans=arrayProductExceptItself();
+
+        // CLASS 3
+        // int ans=numSubarrayBoundedMax();
+        // int ans = maxSumSubarray();
+        // int ans = kConLeetCode();
+        // segreegate01();
+        // segregate012();
+        // sortArrayByParity();
+        // sortArrayByParity2();
+        // List<Integer> ans = partitionLabels();
+
         // System.out.println(ans);
     }
 
@@ -462,6 +473,173 @@ public class AdvancedArrays {
             }
         }
         return ans;
+    }
+
+    public static int numSubarrayBoundedMax() {
+        int[] arr = { 73, 55, 36, 5, 55, 14, 9, 7, 72, 52 };
+        int l = 32;
+        int r = 69;
+        int ans = 0;
+        int i = 0, j = 0;
+        int pcount = 0;
+        while (j < arr.length) {
+            if (arr[j] < l) {
+                ans += pcount;
+            } else if (arr[j] > r) {
+                i = j + 1;
+                pcount = 0;
+            } else {
+                pcount = (j - i + 1);
+                ans += pcount;
+            }
+            j++;
+        }
+        return ans;
+    }
+
+    public static int maxSumSubarray(int[] arr) {
+        // int[] arr = { -2, 1, -3, 4, -1, 2, 1, -5, 4 };
+        int csum = 0;
+        int ans = Integer.MIN_VALUE;
+        for (int i = 0; i < arr.length; i++) {
+            csum += arr[i];
+            if (ans < csum)
+                ans = csum;
+            if (csum < 0)
+                csum = 0;
+        }
+        return ans;
+    }
+
+    public static long kConLeetCode() {
+        int[] arr = { 1, -2, 1 };
+        int k = 3;
+        if (k == 1)
+            return maxSumSubarray(arr);
+        long sum = 0;
+        for (int ele : arr)
+            sum += ele;
+        int[] kd = new int[2 * arr.length];
+        for (int i = 0; i < kd.length; i++)
+            kd[i] = arr[i % arr.length];
+        long ans = 0;
+        if (sum <= 0) {
+            ans = maxSumSubarray(kd);
+        } else {
+            ans = maxSumSubarray(kd) + (k - 2) * sum;
+        }
+        if (ans < 0)
+            return 0;
+        return (int) (ans % (1000000007));
+    }
+
+    public static void segreegate01() {
+        int[] arr = { 0, 1, 1, 1, 0, 0, 1, 1, 1, 0 };
+        int zero = 0;
+        int one = 0;
+        // 0 to zero-1 ->0
+        // zero to one-1 ->one
+        while (one < arr.length) {
+            if (arr[one] == 0) {
+                swap(arr, zero, one);
+                zero++;
+            }
+            one++;
+        }
+        for (int ele : arr)
+            System.out.print(ele + " ");
+    }
+
+    public static void segregate012() {
+        int[] arr = { 0, 2, 2, 2, 1, 1, 0, 0, 0, 1, 2, 2 };
+        int zero = 0, one = 0, two = arr.length - 1;
+        while (one <= two) {
+            if (arr[one] == 0) {
+                swap(arr, one, zero);
+                one++;
+                zero++;
+            } else if (arr[one] == 1) {
+                one++;
+            } else {
+                swap(arr, one, two);
+                two--;
+            }
+        }
+        for (int ele : arr) {
+            System.out.print(ele + " ");
+        }
+    }
+
+    public static void sortArrayByParity() {
+        int[] arr = {};
+        int lastOdd = 0, pt = 0;
+        while (pt < arr.length) {
+            if (arr[pt] % 2 == 0) {
+                swap(arr, lastOdd, pt);
+                lastOdd++;
+            }
+            pt++;
+        }
+        for (int ele : arr)
+            System.out.print(ele + " ");
+    }
+
+    public static void sortArrayByParity2() {
+        int[] arr = { 1, 2, 3, 4 };
+        int even = 0, odd = 1;
+        while (odd < arr.length) {
+            if (arr[odd] % 2 == 0) {
+                while (arr[even] % 2 == 0)
+                    even += 2;
+                swap(arr, even, odd);
+            }
+            odd += 2;
+        }
+        for (int ele : arr)
+            System.out.print(ele + " ");
+    }
+
+    public static List<Integer> partitionLabels() {
+        String str = "ababcbacadefegdehijhklij";
+        List<Integer> ans = new ArrayList<>();
+        int[] map = new int[26];
+        for (int i = 0; i < str.length(); i++) {
+            map[str.charAt(i) - 'a'] = i;
+        }
+        int si = 0;
+        int ei = 0;
+        int pt = 0;
+        while (pt < str.length()) {
+            ei = Math.max(ei, map[str.charAt(pt) - 'a']);
+            if (pt == ei) {
+                ans.add(pt - si + 1);
+                si = pt + 1;
+            }
+            pt++;
+        }
+        return ans;
+    }
+
+    public static void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+
+    public static void swap_01(int[] arr, int i, int j) {
+        arr[j] = ((arr[i] + arr[j]) - (arr[i] = arr[j]));
+    }
+
+    public static void swap_02(int[] arr, int i, int j) {
+        arr[i] = arr[i] + arr[j];
+        arr[j] = arr[i] - arr[j];
+        arr[i] = arr[i] - arr[j];
+    }
+
+    public static void swap_03(int[] arr, int i, int j) {
+        arr[i] = arr[i] ^ arr[j];
+        arr[j] = arr[i] ^ arr[j];
+        arr[j] = arr[i] ^ arr[j];
     }
 
 }

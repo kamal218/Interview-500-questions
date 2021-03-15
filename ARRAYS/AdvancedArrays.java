@@ -18,6 +18,8 @@ public class AdvancedArrays {
         // int[] ans = sortedSquares();
         // relativePrimePairs();
         // napoleanCakeJumpGame();
+        // String ans = nextGreaterElement3("230241");
+        // int ans = nextGreaterElementLeetcode(21);
         // napoleanCakePrefixSum();
         // int ans=majorityElement();
         // List<Integer> ans=majorityElement2();
@@ -38,7 +40,7 @@ public class AdvancedArrays {
         // sortArrayByParity2();
         // List<Integer> ans = partitionLabels();
 
-        // System.out.println(ans);
+        System.out.println(ans);
     }
 
     public static boolean longPressedName() {
@@ -278,6 +280,59 @@ public class AdvancedArrays {
         for (int i = 0; i < arr.length; i++) {
             System.out.print(ans[i] + " ");
         }
+    }
+
+    public static int nextGreaterElementLeetcode(int n) {
+        StringBuilder sb = new StringBuilder();
+        while (n != 0) {
+            sb.append(n % 10);
+            n /= 10;
+        }
+        String res = nextGreaterElement3(sb.reverse().toString());
+        if (res == "")
+            return -1;
+        long ans = 0;
+        for (int i = 0; i < res.length(); i++) {
+            ans = ans * 10 + (res.charAt(i) - '0');
+            if (ans > Integer.MAX_VALUE)
+                return -1;
+        }
+        return (int) ans;
+    }
+
+    public static String nextGreaterElement3(String str) {
+        int st = str.length() - 2;
+        StringBuilder sb = new StringBuilder(str);
+        while (st >= 0) {
+            if (str.charAt(st) < str.charAt(st + 1)) {
+                break;
+            }
+            st--;
+        }
+        if (st == -1) {
+            return "";// decreasing string
+        }
+        int end = str.length() - 1;
+        while (end > st) {
+            if (str.charAt(end) > str.charAt(st))
+                break;
+            end--;
+        }
+        // swap chars
+        char temp = sb.charAt(st);
+        sb.setCharAt(st, sb.charAt(end));
+        sb.setCharAt(end, temp);
+        // reverse array i.e sort
+        int i = st + 1;
+        int j = str.length() - 1;
+        while (i <= j) {
+            temp = sb.charAt(i);
+            sb.setCharAt(i, sb.charAt(j));
+            sb.setCharAt(j, temp);
+            i++;
+            j--;
+        }
+        return sb.toString();
     }
 
     public static int majorityElement() {

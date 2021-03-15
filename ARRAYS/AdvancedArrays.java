@@ -22,6 +22,8 @@ public class AdvancedArrays {
         // int ans=majorityElement();
         // List<Integer> ans=majorityElement2();
         // List<Integer> ans = majorityElementGeneral();
+        // int ans = maxChunksToSorted01();
+        // int ans = maxChunksToSorted02();
         // int ans = maxProductOfThreeNumbers();
         // int ans=largestAtLeastTwice();
         // int[] ans=arrayProductExceptItself();
@@ -424,4 +426,42 @@ public class AdvancedArrays {
         }
         return ans;
     }
+
+    public static int maxChunksToSorted01() {
+        int[] arr = { 1, 2, 4, 3, 0 };
+        int ans = 0;
+        int chunk = -1;
+        for (int i = 0; i < arr.length; i++) {
+            if (i > chunk) {// new chunk starts
+                ans++;
+                chunk = arr[i];
+            } else {// updated chunk size
+                chunk = Math.max(chunk, arr[i]);
+            }
+        }
+        return ans;
+    }
+
+    public static int maxChunksToSorted02() {
+        int[] arr = {};
+        int ans = 1;
+        int len = arr.length;
+        int[] min = new int[len];
+        int[] max = new int[len];
+        max[0] = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            max[i] = Math.max(arr[i], max[i - 1]);
+        }
+        min[len - 1] = arr[len - 1];
+        for (int i = len - 2; i >= 0; i--) {
+            min[i] = Math.min(min[i + 1], arr[i]);
+        }
+        for (int i = 0; i < arr.length - 1; i++) {
+            if (max[i] <= min[i + 1]) {
+                ans++;
+            }
+        }
+        return ans;
+    }
+
 }

@@ -119,4 +119,42 @@ public class LUQuestions {
             dist++;
         }
     }
+
+    public static boolean isBipartite(int[][] graph) {
+        int r = graph.length;
+        int c = graph[0].length;
+        int[] vis = new int[r];
+        Arrays.fill(vis, -1);
+        boolean res = true;
+        for (int i = 0; i < r; i++) {
+            if (vis[i] == -1) {
+                res = res && isBipartite_(graph, vis, i);
+            }
+        }
+        return res;
+    }
+
+    public static boolean isBipartite_(int[][] graph, int[] vis, int src) {
+        int r = graph.length;
+        int c = graph[0].length;
+        Queue<Integer> que = new LinkedList<>();
+        que.add(src);
+        int color = 0;
+        while (que.size() > 0) {
+            int size = que.size();
+            while (size-- > 0) {
+                int last = que.poll();
+
+                for (int ele : graph[last]) {
+                    if (vis[ele] == -1) {
+                        vis[ele] = color;
+                        que.add(ele);
+                    } else if (vis[ele] != color)
+                        return false;
+                }
+            }
+            color = (color + 1) % 2;
+        }
+        return true;
+    }
 }

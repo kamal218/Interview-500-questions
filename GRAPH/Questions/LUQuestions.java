@@ -9,6 +9,8 @@ public class LUQuestions {
         // shortestPathBinaryMatrix();
         // orangesRotting(grid);
         // wallsAndGates(rooms);
+        // courseSchedule01BFS(numCourses, prerequisites);
+        // courseSchedule02BFS(numCourses, prerequisites);
     }
 
     public static int shortestPathBinaryMatrix(int[][] grid) {
@@ -156,5 +158,122 @@ public class LUQuestions {
             color = (color + 1) % 2;
         }
         return true;
+    }
+
+    public static boolean courseSchedule01BFS(int numCourses, int[][] prerequisites) {
+        ArrayList<Integer>[] graph = new ArrayList[numCourses];
+        for (int i = 0; i < numCourses; i++)
+            graph[i] = new ArrayList<>();
+        for (int i = 0; i < prerequisites.length; i++)
+            graph[prerequisites[i][0]].add(prerequisites[i][1]);
+        return courseSchedule01BFS_(graph);
+
+    }
+
+    public static boolean courseSchedule01BFS_(ArrayList<Integer>[] graph) {// kahns algorithm
+        int n = graph.length;
+        ArrayList<Integer> ans = new ArrayList<>();
+        Queue<Integer> que = new LinkedList<>();
+        int[] inDeg = new int[n];
+        for (int i = 0; i < n; i++)
+            for (int e : graph[i])
+                inDeg[e]++;
+
+        for (int i = 0; i < n; i++)
+            if (inDeg[i] == 0)
+                que.add(i);
+        int level = 0;
+        while (que.size() > 0) {
+            int size = que.size();
+            while (size-- > 0) {
+                int last = que.poll();
+                ans.add(last);
+
+                for (int e : graph[last])
+                    if (--inDeg[e] == 0)
+                        que.add(e);
+            }
+            level++;
+        }
+
+        return ans.size() == n;
+
+    }
+
+    public static int[] courseSchedule02BFS(int numCourses, int[][] prerequisites) {
+        ArrayList<Integer>[] graph = new ArrayList[numCourses];
+        for (int i = 0; i < numCourses; i++)
+            graph[i] = new ArrayList<>();
+        for (int i = 0; i < prerequisites.length; i++)
+            graph[prerequisites[i][0]].add(prerequisites[i][1]);
+        return courseSchedule02BFS_(graph);
+    }
+
+    public static int[] courseSchedule02BFS_(ArrayList<Integer>[] graph) {// kahns algorithm
+        int n = graph.length;
+        ArrayList<Integer> ans = new ArrayList<>();
+        Queue<Integer> que = new LinkedList<>();
+        int[] inDeg = new int[n];
+        for (int i = 0; i < n; i++)
+            for (int e : graph[i])
+                inDeg[e]++;
+
+        for (int i = 0; i < n; i++)
+            if (inDeg[i] == 0)
+                que.add(i);
+        int level = 0;
+        while (que.size() > 0) {
+            int size = que.size();
+            while (size-- > 0) {
+                int last = que.poll();
+                ans.add(last);
+
+                for (int e : graph[last])
+                    if (--inDeg[e] == 0)
+                        que.add(e);
+            }
+            level++;
+        }
+
+        if (ans.size() != n) {
+            return new int[0];
+        }
+        int[] res = new int[ans.size()];
+        int k = ans.size() - 1;
+        for (int i = 0; i < ans.size(); i++)
+            res[k--] = ans.get(i);
+        return res;
+    }
+
+    public boolean courseSchedule01DFS(ArrayList<Integer>[] graph) {
+        int n=graph.length;
+        int[] vis = new int[n];
+        Arrays.fill(vis, -1);
+        boolean res = false;
+        ArrayList<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            if (vis[i] == -1) {
+                res = res || cyclicTopoSortDFS(graph,i, vis, ans);
+            }
+        }
+        if (res) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public  boolean cyclicTopoSortDFS(ArrayList<Integer>[] graph,int src, int[] vis, ArrayList<Integer> ans) {
+        vis[src] = 0;
+        boolean res = false;
+        for (int e : graph[src]) {
+            if (vis[e] == -1) {
+                res = res || cyclicTopoSortDFS(graph,e, vis, ans);
+            } else if (vis[e] == 0)
+                return true;
+        }
+        vis[src] = 1;
+        ans.add(src);
+        return res;
     }
 }

@@ -40,7 +40,17 @@ public class AdvancedArrays {
         // sortArrayByParity2();
         // List<Integer> ans = partitionLabels();
 
-        System.out.println(ans);
+        // CLASS 4
+        // meximization();
+        // mArraysCodeeForces();
+        // kLCMCodeForcesEasy();
+        // kLCMCodeForcesHard();
+        // consecutiveNumbersSum();
+        // long ans = fastExponentiation(2, 4);
+        // int[][] ans = fibonacciOptimized(3);
+        sieveOfEratosthenes();
+
+        // System.out.println(ans);
     }
 
     public static boolean longPressedName() {
@@ -433,6 +443,43 @@ public class AdvancedArrays {
         return count > (arr.length / k);
     }
 
+    public static int maxChunksToSorted01() {
+        int[] arr = { 1, 2, 4, 3, 0 };
+        int ans = 0;
+        int chunk = -1;
+        for (int i = 0; i < arr.length; i++) {
+            if (i > chunk) {// new chunk starts
+                ans++;
+                chunk = arr[i];
+            } else {// updated chunk size
+                chunk = Math.max(chunk, arr[i]);
+            }
+        }
+        return ans;
+    }
+
+    public static int maxChunksToSorted02() {
+        int[] arr = {};
+        int ans = 1;
+        int len = arr.length;
+        int[] min = new int[len];
+        int[] max = new int[len];
+        max[0] = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            max[i] = Math.max(arr[i], max[i - 1]);
+        }
+        min[len - 1] = arr[len - 1];
+        for (int i = len - 2; i >= 0; i--) {
+            min[i] = Math.min(min[i + 1], arr[i]);
+        }
+        for (int i = 0; i < arr.length - 1; i++) {
+            if (max[i] <= min[i + 1]) {
+                ans++;
+            }
+        }
+        return ans;
+    }
+
     public static int maxProductOfThreeNumbers() {
         int[] arr = {};
         int min1 = Integer.MAX_VALUE, min2 = Integer.MAX_VALUE;
@@ -489,43 +536,6 @@ public class AdvancedArrays {
         for (int i = arr.length - 1; i >= 0; i--) {
             ans[i] *= r;
             r *= arr[i];
-        }
-        return ans;
-    }
-
-    public static int maxChunksToSorted01() {
-        int[] arr = { 1, 2, 4, 3, 0 };
-        int ans = 0;
-        int chunk = -1;
-        for (int i = 0; i < arr.length; i++) {
-            if (i > chunk) {// new chunk starts
-                ans++;
-                chunk = arr[i];
-            } else {// updated chunk size
-                chunk = Math.max(chunk, arr[i]);
-            }
-        }
-        return ans;
-    }
-
-    public static int maxChunksToSorted02() {
-        int[] arr = {};
-        int ans = 1;
-        int len = arr.length;
-        int[] min = new int[len];
-        int[] max = new int[len];
-        max[0] = arr[0];
-        for (int i = 1; i < arr.length; i++) {
-            max[i] = Math.max(arr[i], max[i - 1]);
-        }
-        min[len - 1] = arr[len - 1];
-        for (int i = len - 2; i >= 0; i--) {
-            min[i] = Math.min(min[i + 1], arr[i]);
-        }
-        for (int i = 0; i < arr.length - 1; i++) {
-            if (max[i] <= min[i + 1]) {
-                ans++;
-            }
         }
         return ans;
     }
@@ -673,6 +683,145 @@ public class AdvancedArrays {
             pt++;
         }
         return ans;
+    }
+
+    public static void meximization() {
+        int[] arr = { 0, 1, 2 };
+        Arrays.sort(arr);
+
+        for (int i = 0; i < arr.length - 1; i++) {
+            if (arr[i] != arr[i + 1]) {
+                System.out.print(arr[i] + " ");
+                arr[i] = -1;
+            }
+        }
+        System.out.print(arr[arr.length - 1] + " ");
+        arr[arr.length - 1] = -1;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] != -1) {
+                System.out.print(arr[i] + " ");
+            }
+        }
+    }
+
+    public static void mArraysCodeeForces() {
+        int[] arr = {};
+        int m = 4;
+        int n = arr.length;
+        int[] help = new int[m];
+        for (int i = 0; i < n; i++) {
+            int v = arr[i];
+            help[v % m]++;
+        }
+        if (n == 1) {
+            System.out.println(1);
+            return;
+        }
+        int ans = 0;
+
+        if (help[0] > 0)
+            ans++;
+        int si = 1;
+        int ei = m - 1;
+        while (si < ei) {
+            if (help[si] == help[ei]) {
+                if (help[si] != 0)
+                    ans++;
+            } else {
+                int max = Math.max(help[si], help[ei]);
+                int min = Math.min(help[si], help[ei]);
+                ans++;
+                max = max - min - 1;
+                ans += max;
+            }
+            si++;
+            ei--;
+        }
+        if (si == ei && help[si] > 0)
+            ans++;
+        System.out.println(ans);
+    }
+
+    public static void kLCMCodeForcesEasy() {
+        int n = 3;
+
+        if (n % 2 != 0) {
+            System.out.println(1 + " " + n / 2 + " " + n / 2);
+        } else if (n % 4 == 0) {
+            System.out.println(n / 2 + " " + n / 4 + " " + n / 4);
+        } else {
+            System.out.println(2 + " " + (n - 2) / 2 + " " + (n - 2) / 2);
+        }
+    }
+
+    public static void kLCMCodeForcesHard() {
+        int n = 20;
+        int k = 5;
+        while (k != 3) {
+            System.out.print(1 + " ");
+            k--;
+            n--;
+        }
+        if (n % 2 != 0) {
+            System.out.println(1 + " " + n / 2 + " " + n / 2);
+        } else if (n % 4 == 0) {
+            System.out.println(n / 2 + " " + n / 4 + " " + n / 4);
+        } else {
+            System.out.println(2 + " " + (n - 2) / 2 + " " + (n - 2) / 2);
+        }
+    }
+
+    public static int consecutiveNumbersSum() {
+        int n = 20;
+        int ans = 0;
+        for (int k = 1; k * k < (2 * n); k++) {
+            int st = (n - ((k - 1) * k) / 2);
+            if (st % k == 0)
+                ans++;
+        }
+        return ans;
+    }
+
+    public static long fastExponentiation(int a, int b) {
+        if (b == 0)
+            return 1;
+        long res = fastExponentiation(a, b / 2);
+        return b % 2 == 0 ? (res * res) : (res * res * a);
+    }
+
+    public static int[][] fibonacciOptimized(int n) {
+        int[][] base = { { 1, 1 }, { 1, 0 } };
+        if (n == 1)
+            return base;
+        int[][] res = fibonacciOptimized(n / 2);
+        multiplyMatrix(res, res);
+        return n % 2 == 0 ? multiplyMatrix(res, res) : multiplyMatrix(multiplyMatrix(res, res), base);
+    }
+
+    public static int[][] multiplyMatrix(int[][] m1, int[][] m2) {
+        int[][] res = new int[2][2];
+        res[0][0] = m1[0][0] * m2[0][0] + m1[0][1] * m2[1][0];
+        res[0][1] = m1[0][0] * m2[0][1] + m1[0][1] * m2[1][1];
+        res[1][0] = m1[1][0] * m2[0][0] + m1[1][1] * m2[1][0];
+        res[1][1] = m1[1][0] * m2[0][1] + m1[1][1] * m2[1][1];
+        return res;
+    }
+
+    public static void sieveOfEratosthenes() {
+        int n = 100;
+        boolean[] dp = new boolean[n + 1];
+        for (long i = 2; i <= n; i++) {
+            if (!dp[(int) i]) {
+                for (long j = i * i; j <= n; j += i) {
+                    dp[(int) j] = true;
+                }
+            }
+        }
+        for (int i = 2; i < dp.length; i++) {
+            if (!dp[i]) {
+                System.out.print(i+" ");
+            }
+        }
     }
 
     public static void swap(int[] arr, int i, int j) {

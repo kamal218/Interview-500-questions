@@ -48,7 +48,11 @@ public class AdvancedArrays {
         // consecutiveNumbersSum();
         // long ans = fastExponentiation(2, 4);
         // int[][] ans = fibonacciOptimized(3);
-        sieveOfEratosthenes();
+        // sieveOfEratosthenes();
+        // primeInRange();
+        // maximumSwap(2117);
+        // maximumSwap_(2117);
+        minJump();
 
         // System.out.println(ans);
     }
@@ -819,9 +823,146 @@ public class AdvancedArrays {
         }
         for (int i = 2; i < dp.length; i++) {
             if (!dp[i]) {
-                System.out.print(i+" ");
+                System.out.print(i + " ");
             }
         }
+    }
+
+    public static void primeInRange() {
+        int st = 17;
+        int end = 500;
+        // create simple sieve for root(end)
+        int rt = (int) Math.sqrt(end);
+        boolean[] dp = new boolean[rt + 1];
+        for (long i = 2; i < dp.length; i++) {
+            if (!dp[(int) i]) {
+                for (long j = i * i; j <= rt; j += i) {
+                    dp[(int) j] = true;
+                }
+            }
+        }
+
+        boolean[] ndp = new boolean[end - st + 1];
+        for (int k = 2; k < dp.length; k++) {
+            if (!dp[k]) {
+                int ceil = (st / k);
+                if (st % k != 0 || st == 0)
+                    ceil++;
+                ceil = (ceil) * k;
+                int idx = ceil - st;
+                // System.out.println(ceil);
+                if (st <= k) {
+                    idx += k;
+                }
+                // System.out.println(idx + st);
+                while (idx <= end - st) {
+                    ndp[idx] = true;
+                    idx += k;
+                }
+            }
+        }
+        for (int i = Math.max(st, 2); i <= end; i++) {
+            int idx = i - st;
+            if (!ndp[idx]) {
+                System.out.println(i);
+            }
+        }
+    }
+
+    public static void wiggleSort() {
+        int[] arr = {};
+        // greater at odd index
+        for (int i = 1; i < arr.length; i++) {
+            if (i % 2 == 0) {
+                if (arr[i] > arr[i - 1])
+                    swap(arr, i, i - 1);
+            } else {
+                if (arr[i] < arr[i - 1])
+                    swap(arr, i, i - 1);
+            }
+        }
+    }
+
+    public static int maximumSwap(int num) {
+        // if number is one digit
+        if (num < 10)
+            return num;
+        // use string Builderr for fast access of elements
+        StringBuilder sb = new StringBuilder();
+        while (num != 0) {
+            sb.append((char) (num % 10 + '0'));
+            num /= 10;
+        }
+
+        // save max index value upto current index
+        int[] max = new int[sb.length()];
+        max[0] = 0;
+        for (int i = 1; i < sb.length(); i++) {
+            if (sb.charAt(i) - '0' > sb.charAt(max[i - 1]) - '0') {
+                max[i] = i;
+            } else {
+                max[i] = max[i - 1];
+            }
+        }
+
+        // create answer if values can be swapped
+        for (int i = max.length - 1; i >= 0; i--) {
+            int dig1 = sb.charAt(i) - '0';
+            int dig2 = sb.charAt(max[i]) - '0';
+            if (dig1 < dig2) {
+                char temp = sb.charAt(i);
+                sb.setCharAt(i, sb.charAt(max[i]));
+                sb.setCharAt(max[i], temp);
+                break;
+            }
+        }
+
+        int ans = 0;
+        // convert string builder into number form
+        for (int i = max.length - 1; i >= 0; i--) {
+            ans = ans * 10 + (sb.charAt(i) - '0');
+        }
+        return ans;
+    }
+
+    public static int maximumSwap_(int num) {
+        char[] A = Integer.toString(num).toCharArray();
+        int[] last = new int[10];
+        for (int i = 0; i < A.length; i++) {
+            last[A[i] - '0'] = i;
+        }
+
+        for (int i = 0; i < A.length; i++) {
+            for (int d = 9; d > A[i] - '0'; d--) {
+                if (last[d] > i) {
+                    char tmp = A[i];
+                    A[i] = A[last[d]];
+                    A[last[d]] = tmp;
+                    return Integer.valueOf(new String(A));
+                }
+            }
+        }
+        return num;
+    }
+
+    public static int minJump() {
+        int tar = 17;
+        int jump = 1;
+        int pos = 0;
+        int ans = 0;
+        while (pos < tar) {
+            pos += jump;
+            jump++;
+            ans++;
+        }
+        if (pos == tar)
+            return ans;
+        if ((pos - tar) % 2 == 0)
+            return ans + 1;
+        pos += jump + 1;
+        if ((pos - tar) % 2 == 0)
+            return ans + 2;
+        return ans + 3;
     }
 
     public static void swap(int[] arr, int i, int j) {

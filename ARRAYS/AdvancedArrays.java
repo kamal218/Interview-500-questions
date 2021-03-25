@@ -62,9 +62,20 @@ public class AdvancedArrays {
         // pairWithGivenSum();
         // pairWithGivenDiff();
         // numRescueBoats();
-        // smallestRange(new ArrayList<>());
         // smallestRange();
+        // maxProduct();
+        // reverseVowels("Hello");
+        // int ans = minNumberOfPlatforms();
 
+        // CLASS 6
+        // firstMissingPositive();
+        // kthMissingPositive();
+        // rotateImage();
+        // pushDominoes();
+        // validPalindrome2();
+        // sumOfSubseqWidths();
+        // maxDistToClosest();
+        
         // System.out.println(ans);
     }
 
@@ -1140,6 +1151,240 @@ public class AdvancedArrays {
         int[] ans = new int[2];
         ans[0] = sv;
         ans[1] = ev;
+        return ans;
+    }
+
+    public static int maxProduct(int[] nums) {
+        int ans = Integer.MIN_VALUE;
+        int cmax = 1;
+
+        for (int i = 0; i < nums.length; i++) {
+            cmax *= nums[i];
+            ans = Math.max(ans, cmax);
+            if (cmax == 0)
+                cmax = 1;
+        }
+
+        cmax = 1;
+        for (int i = nums.length - 1; i >= 0; i--) {
+            cmax *= nums[i];
+            ans = Math.max(ans, cmax);
+            if (cmax == 0)
+                cmax = 1;
+        }
+
+        return ans;
+    }
+
+    public static String reverseVowels(String s) {
+        int i = 0, j = s.length() - 1;
+
+        char[] arr = s.toCharArray();
+        while (i < j) {
+            if (vow(arr[i]) && vow(arr[j])) {
+                char ch = arr[i];
+                arr[i] = arr[j];
+                arr[j] = ch;
+                i++;
+                j--;
+            } else if (vow(arr[i]))
+                j--;
+            else if (vow(arr[j]))
+                i++;
+            else {
+                i++;
+                j--;
+            }
+        }
+        return String.valueOf(arr);
+    }
+
+    public static Boolean vow(char ch) {
+        if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u' || ch == 'A' || ch == 'E' || ch == 'I'
+                || ch == 'O' || ch == 'U')
+            return true;
+        return false;
+    }
+
+    // public static int minNumberOfPlatforms() {
+    // int arr[] = { 900, 940, 950, 1100, 1500, 1800 };
+    // int dep[] = { 910, 1200, 1120, 1130, 1900, 2000 };
+    // int ans = 1;
+    // int cpf = 1;
+    // int etime = dep[0];
+    // for (int i = 1; i < arr.length; i++) {
+    // if (arr[i] < etime) {
+    // cpf++;
+    // etime = Math.max(etime, dep[i]);
+    // } else {
+    // cpf = 1;
+    // etime = Math.max(etime, dep[i]);
+    // }
+    // ans = Math.max(ans, cpf);
+    // }
+    // return ans;
+    // }
+
+    public static int firstMissingPositive() {
+        int[] arr = {};
+        int i = 0;
+        while (i < arr.length) {
+            if (arr[i] <= arr.length && arr[i] >= 1 && arr[arr[i] - 1] != arr[i]) {
+                int temp = arr[arr[i] - 1];
+                arr[arr[i] - 1] = arr[i];
+                arr[i] = temp;
+                i--;
+            }
+            i++;
+        }
+        for (i = 0; i < arr.length; i++) {
+            if (arr[i] != i + 1)
+                return i + 1;
+        }
+        return arr.length + 1;
+    }
+
+    public static int kthMissingPositive(int[] nums, int k) {
+        int val = 1;
+        int i = 0;
+        while (i < nums.length && k != 0) {
+            if (nums[i] == val) {
+                val++;
+                i++;
+            } else {
+                k--;
+                val++;
+            }
+        }
+        if (k == 0)
+            return val - 1;
+        return val + k - 1;
+    }
+
+    public static void rotateImage(int[][] mat) {
+        for (int gap = 1; gap < mat.length; gap++) {
+            int si = 0;
+            int ei = gap;
+            while (ei < mat.length) {
+                int temp = mat[si][ei];
+                mat[si][ei] = mat[ei][si];
+                mat[ei][si] = temp;
+                si++;
+                ei++;
+            }
+        }
+        int si = 0;
+        int ei = mat.length - 1;
+        while (si < ei) {
+            for (int i = 0; i < mat.length; i++) {
+                int temp = mat[i][si];
+                mat[i][si] = mat[i][ei];
+                mat[i][ei] = temp;
+            }
+            si++;
+            ei--;
+        }
+    }
+
+    public static String pushDominoes(String s) {
+        StringBuilder sb = new StringBuilder();
+        sb.append('L');
+        for (int i = 0; i < s.length(); i++) {
+            sb.append(s.charAt(i));
+        }
+        sb.append('R');
+        int st = 0, end = 1;
+        while (end < sb.length()) {
+            while (end < sb.length() && sb.charAt(end) == '.') {
+                end++;
+            }
+            char l = sb.charAt(st);
+            char r = sb.charAt(end);
+            if (l == 'L' && r == 'L') {
+                int k = end - 1;
+                while (k > st) {
+                    sb.setCharAt(k, 'L');
+                    k--;
+                }
+            } else if (l == 'R' && r == 'R') {
+                int k = end - 1;
+                while (k > st) {
+                    sb.setCharAt(k, 'R');
+                    k--;
+                }
+            } else if (l == 'L' && r == 'R') {
+
+            } else {
+                int si = st + 1, ei = end - 1;
+                while (si < ei) {
+                    sb.setCharAt(si, 'R');
+                    sb.setCharAt(ei, 'L');
+                    si++;
+                    ei--;
+                }
+            }
+            st = end;
+            end++;
+        }
+        StringBuilder ans = new StringBuilder();
+        for (int i = 1; i < sb.length() - 1; i++)
+            ans.append(sb.charAt(i));
+        return ans.toString();
+    }
+
+    public static boolean validPalindrome2(String s) {
+        int i = 0, j = s.length() - 1;
+        while (i < j && s.charAt(i) == s.charAt(j)) {
+            i++;
+            j--;
+        }
+        if (i >= j)
+            return true;
+        return isPallinInRange(s, i + 1, j) || isPallinInRange(s, i, j - 1);
+
+    }
+
+    public static boolean isPallinInRange(String s, int i, int j) {
+        while (i < j && s.charAt(i) == s.charAt(j)) {
+            i++;
+            j--;
+        }
+        return i >= j;
+    }
+
+    public static int sumOfSubseqWidths(int[] A) {
+        Arrays.sort(A);
+        long ans = 0;
+        int mod = 1000000007;
+        long[] pow = new long[A.length];
+        pow[0] = 1;
+        for (int i = 1; i < A.length; i++)
+            pow[i] = (pow[i - 1] * 2) % mod;
+
+        for (int i = 0; i < A.length; i++) {
+            ans = (ans + (pow[i] - pow[A.length - i - 1]) * A[i]) % mod;
+        }
+        return (int) ans;
+    }
+
+    public static int maxDistToClosest(int[] seats) {
+        int st = -1;
+        int pt = 0;
+        int ans = Integer.MIN_VALUE;
+        while (seats[pt] != 1) {//for 0000001
+            pt++;
+        }
+        ans = pt;
+        st = pt;
+        pt++;
+        while (pt < seats.length) {
+            if (seats[pt] == 1) {
+                ans = Math.max(ans, (pt - st) / 2);
+                st = pt;
+            }
+            pt++;
+        }
+        ans = Math.max(ans, seats.length - st - 1);//for 10000000000000000
         return ans;
     }
 

@@ -1,5 +1,7 @@
 import java.util.*;
 
+import java.util.PriorityQueue;
+
 public class AdvancedArrays {
     public static void main(String[] args) {
         // SET1 IP_BATCH
@@ -52,7 +54,16 @@ public class AdvancedArrays {
         // primeInRange();
         // maximumSwap(2117);
         // maximumSwap_(2117);
-        minJump();
+        // minJump();
+
+        // CLASS 5
+        // minDominoRotations();
+        // multiplyString();
+        // pairWithGivenSum();
+        // pairWithGivenDiff();
+        // numRescueBoats();
+        // smallestRange(new ArrayList<>());
+        // smallestRange();
 
         // System.out.println(ans);
     }
@@ -963,6 +974,173 @@ public class AdvancedArrays {
         if ((pos - tar) % 2 == 0)
             return ans + 2;
         return ans + 3;
+    }
+
+    public static int minDominoRotations(int[] A, int[] B) {
+        int ans = Integer.MAX_VALUE;
+        // a same value
+        int a1 = countDominoSwaps(A, B, true, A[0]);
+        int a2 = countDominoSwaps(A, B, true, B[0]);
+        // b same value
+        int b1 = countDominoSwaps(A, B, false, B[0]);
+        int b2 = countDominoSwaps(A, B, false, A[0]);
+
+        ans = Math.min(a1, Math.min(a2, Math.min(b1, b2)));
+        return ans == Integer.MAX_VALUE ? -1 : ans;
+    }
+
+    public static int countDominoSwaps(int[] a, int[] b, boolean first, int val) {
+        int ans = 0;
+        for (int i = 0; i < a.length; i++) {
+            if (first) {
+                if (a[i] == val) {
+
+                } else if (b[i] == val) {
+                    ans++;
+                } else {
+                    return Integer.MAX_VALUE;
+                }
+            } else {
+                if (b[i] == val) {
+
+                } else if (a[i] == val) {
+                    ans++;
+                } else {
+                    return Integer.MAX_VALUE;
+                }
+            }
+        }
+        return ans;
+    }
+
+    public static String multiplyString() {
+        String str1 = "";
+        String str2 = "";
+        int n = str1.length();
+        int m = str2.length();
+        char[] arr1 = str1.toCharArray();
+        char[] arr2 = str2.toCharArray();
+        char[] ans = new char[n + m];
+        Arrays.fill(ans, (char) (0 + '0'));
+        int carry = 0;
+        int mul = 0;
+        int k = n + m;
+        int p = n + m;
+        for (int i = m - 1; i >= 0; i--) {
+            int down = arr2[i] - '0';
+            p--;
+            k = p;
+            carry = 0;
+            for (int j = n - 1; j >= 0; j--) {
+                int up = arr1[j] - '0';
+                mul = (up * down) + carry;
+                mul += (ans[k] - '0');
+                carry = mul / 10;
+                ans[k] = (char) ((mul % 10) + '0');
+                k--;
+            }
+            if (carry != 0) {
+                ans[k] = (char) (carry + '0');
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean zero = true;
+        int pt = 0;
+        if (ans[0] == '0')
+            pt = 1;
+        for (; pt < n + m; pt++) {
+            if (ans[pt] != '0')
+                zero = false;
+            sb.append(ans[pt]);
+        }
+        if (zero)
+            return "0";
+        return sb.toString();
+    }
+
+    public static boolean pairWithGivenSum() {
+        int[] arr = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        int tar = 10;
+        int si = 0, ei = arr.length - 1;
+        while (si < ei) {
+            int sum = arr[si] + arr[ei];
+            if (sum == tar)
+                return true;
+            else if (sum < tar)
+                si++;
+            else
+                ei--;
+        }
+        return false;
+    }
+
+    public static boolean pairWithGivenDiff() {
+        int[] arr = { 1, 2, 3, 4 };
+        int tar = 1;
+        int si = 0, ei = 1;
+        while (si < arr.length && ei < arr.length) {
+            int diff = arr[ei] - arr[si];
+            if (si != ei && (diff == tar || diff == -tar))// -ve or +ve tar
+                return true;
+            else if (diff < tar)
+                ei++;
+            else
+                si++;
+        }
+        return false;
+    }
+
+    public static int numRescueBoats(int[] arr, int l) {
+        Arrays.sort(arr);
+        int i = 0, j = arr.length - 1;
+        int ans = 0;
+        while (i <= j) {
+            ans++;
+            if (arr[i] + arr[j] <= l)
+                i++;
+            j--;
+        }
+        return ans;
+    }
+
+    public static class triple {
+        int r = 0;
+        int c = 0;
+        int val = 0;
+
+        public triple(int r, int c, int val) {
+            this.r = r;
+            this.c = c;
+            this.val = val;
+        }
+    }
+
+    public static int[] smallestRange(List<List<Integer>> nums) {
+        PriorityQueue<triple> pq = new PriorityQueue<>((a, b) -> (a.val - b.val));
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < nums.size(); i++) {
+            pq.add(new triple(i, 0, nums.get(i).get(0)));
+            max = Math.max(max, nums.get(i).get(0));
+        }
+        int sv = -(int) 1e6;
+        int ev = -(int) 1e6;
+        while (true) {
+            triple min = pq.poll();
+            if (sv == -(int) 1e6 || (ev - sv) > (max - min.val)) {
+                sv = min.val;
+                ev = max;
+            }
+            if (nums.get(min.r).size() - 1 != min.c) {
+                pq.add(new triple(min.r, min.c + 1, nums.get(min.r).get(min.c + 1)));
+                max = Math.max(max, nums.get(min.r).get(min.c + 1));
+            } else {
+                break;
+            }
+        }
+        int[] ans = new int[2];
+        ans[0] = sv;
+        ans[1] = ev;
+        return ans;
     }
 
     public static void swap(int[] arr, int i, int j) {

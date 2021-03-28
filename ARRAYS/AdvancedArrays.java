@@ -75,8 +75,11 @@ public class AdvancedArrays {
         // validPalindrome2();
         // sumOfSubseqWidths();
         // maxDistToClosest();
-        
-        // System.out.println(ans);
+        // buddyNim();
+        // sortTheArrayCodeForces();
+        int ans=maxSumTwoNoOverlapExtraSpace();
+
+        System.out.println(ans);
     }
 
     public static boolean longPressedName() {
@@ -1371,7 +1374,7 @@ public class AdvancedArrays {
         int st = -1;
         int pt = 0;
         int ans = Integer.MIN_VALUE;
-        while (seats[pt] != 1) {//for 0000001
+        while (seats[pt] != 1) {// for 0000001
             pt++;
         }
         ans = pt;
@@ -1384,7 +1387,156 @@ public class AdvancedArrays {
             }
             pt++;
         }
-        ans = Math.max(ans, seats.length - st - 1);//for 10000000000000000
+        ans = Math.max(ans, seats.length - st - 1);// for 10000000000000000
+        return ans;
+    }
+
+    public static void buddyNim() {
+        int n = 5;
+        int m = 4;
+        long[] arr1 = new long[n];
+        long[] arr2 = new long[m];
+
+        // case 2 same sum hence check symmetricity
+        Arrays.sort(arr1);
+        Arrays.sort(arr2);
+        int p1 = 0, p2 = 0;
+        while (p1 < n && arr1[p1] == 0) {
+            p1++;
+        }
+        while (p2 < m && arr2[p2] == 0) {
+            p2++;
+        }
+        if ((n - p1) != (m - p2)) {
+            System.out.println("Alice");
+            // continue;
+        }
+        boolean sym = true;
+        while (p1 < n) {
+            if (arr1[p1] != arr2[p2]) {
+                sym = false;
+                break;
+            }
+            p1++;
+            p2++;
+        }
+        if (sym) {
+            System.out.println("Bob");
+        } else {
+            System.out.println("Alice");
+        }
+    }
+
+    public static void sortTheArrayCodeForces() {
+        int n = 10;
+        int[] arr = new int[n];
+        int si = 0, ei = n - 1;
+        while (si + 1 < n) {
+            if (arr[si + 1] < arr[si])
+                break;
+            si++;
+        }
+        if (si == n - 1) {
+            System.out.println("yes");
+            System.out.println(1 + " " + 1);
+            // continue;
+        }
+        while (ei - 1 >= 0) {
+            if (arr[ei - 1] > arr[ei])
+                break;
+            ei--;
+        }
+        boolean rev = isSorted(arr, si, ei);
+        int lv = si > 0 ? arr[si - 1] : -1;
+        int rv = ei < n - 1 ? arr[ei + 1] : Integer.MAX_VALUE;
+        if (rev && (lv <= arr[ei]) && (rv >= arr[si])) {
+            System.out.println("yes");
+            System.out.println((si + 1) + " " + (ei + 1));
+        } else {
+            System.out.println("no");
+        }
+    }
+
+    public static boolean isSorted(int[] arr, int si, int ei) {
+        si = si + 1;
+        while (si <= ei) {
+            if (arr[si] > arr[si - 1])
+                return false;
+            si++;
+        }
+        return true;
+    }
+
+    public static int bulbSwitch1() {
+        // only perfect squares will be on due to odd factors
+        int n = 10;
+        return (int) Math.sqrt(n);
+    }
+
+    public static int bulbSwitch3() {
+        int[] light = { 1, 2, 3, 4, 5 };
+        int ans = 0;
+        int max = light[0];
+        for (int i = 0; i < light.length; i++) {
+            max = Math.max(max, light[i]);
+            if (i + 1 == max)
+                ans++;
+        }
+        return ans;
+    }
+
+    public static int maxSumTwoNoOverlapExtraSpace() {
+        int[] arr = { 3,8,1,3,2,1,8,9,0 };
+        int l = 3;
+        int m = 2;
+        int[] leftl = maxSubarrayWithLLengthFromleft(arr, l);//array with max subarray upto i from left of length l
+        int[] rightm = maxSubarrayWithLLengthFromRight(arr, m);//array with max subarray upto i from right of length m
+        int[] leftm = maxSubarrayWithLLengthFromleft(arr, m);//array with max subarray upto i from left of length m
+        int[] rightl = maxSubarrayWithLLengthFromRight(arr, l);//array with max subarray upto i from right of length l
+        int ans = Integer.MIN_VALUE;
+        for (int i = l - 1; i < arr.length - m; i++) {
+            ans = Math.max(ans, leftl[i] + rightm[i + 1]);
+        }
+        for (int i = arr.length - l; i >= m; i--) {
+            ans = Math.max(ans,leftm[i - 1] + rightl[i]);
+        }
+        return ans;
+    }
+
+    public static int[] maxSubarrayWithLLengthFromleft(int[] arr, int l) {
+        int[] ans = new int[arr.length];
+        int i = 0;
+        int sum = 0;
+        while (i < l) {
+            sum += arr[i];
+            i++;
+        }
+        ans[i - 1] = sum;
+        while (i < arr.length) {
+            sum += arr[i];
+            sum -= arr[i - l];
+            ans[i] = Math.max(ans[i - 1], sum);
+            i++;
+        }
+        return ans;
+    }
+
+    public static int[] maxSubarrayWithLLengthFromRight(int[] arr, int l) {
+        int n = arr.length;
+        int[] ans = new int[n];
+        int i = n - 1;
+        int sum = 0;
+        while (i >= n - l) {
+            sum += arr[i];
+            i--;
+        }
+        ans[i + 1] = sum;
+        while (i >= 0) {
+            sum += arr[i];
+            sum -= arr[i + l];
+            ans[i] = Math.max(ans[i + 1], sum);
+            i--;
+        }
         return ans;
     }
 

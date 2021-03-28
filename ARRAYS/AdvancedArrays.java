@@ -77,7 +77,8 @@ public class AdvancedArrays {
         // maxDistToClosest();
         // buddyNim();
         // sortTheArrayCodeForces();
-        int ans=maxSumTwoNoOverlapExtraSpace();
+        // int ans = maxSumTwoNoOverlapExtraSpace();
+        int ans = maxSumTwoNoOverlapExtraSpaceOptimized();
 
         System.out.println(ans);
     }
@@ -1486,19 +1487,19 @@ public class AdvancedArrays {
     }
 
     public static int maxSumTwoNoOverlapExtraSpace() {
-        int[] arr = { 3,8,1,3,2,1,8,9,0 };
+        int[] arr = { 3, 8, 1, 3, 2, 1, 8, 9, 0 };
         int l = 3;
         int m = 2;
-        int[] leftl = maxSubarrayWithLLengthFromleft(arr, l);//array with max subarray upto i from left of length l
-        int[] rightm = maxSubarrayWithLLengthFromRight(arr, m);//array with max subarray upto i from right of length m
-        int[] leftm = maxSubarrayWithLLengthFromleft(arr, m);//array with max subarray upto i from left of length m
-        int[] rightl = maxSubarrayWithLLengthFromRight(arr, l);//array with max subarray upto i from right of length l
+        int[] leftl = maxSubarrayWithLLengthFromleft(arr, l);// array with max subarray upto i from left of length l
+        int[] rightm = maxSubarrayWithLLengthFromRight(arr, m);// array with max subarray upto i from right of length m
+        int[] leftm = maxSubarrayWithLLengthFromleft(arr, m);// array with max subarray upto i from left of length m
+        int[] rightl = maxSubarrayWithLLengthFromRight(arr, l);// array with max subarray upto i from right of length l
         int ans = Integer.MIN_VALUE;
         for (int i = l - 1; i < arr.length - m; i++) {
             ans = Math.max(ans, leftl[i] + rightm[i + 1]);
         }
         for (int i = arr.length - l; i >= m; i--) {
-            ans = Math.max(ans,leftm[i - 1] + rightl[i]);
+            ans = Math.max(ans, leftm[i - 1] + rightl[i]);
         }
         return ans;
     }
@@ -1536,6 +1537,26 @@ public class AdvancedArrays {
             sum -= arr[i + l];
             ans[i] = Math.max(ans[i + 1], sum);
             i--;
+        }
+        return ans;
+    }
+
+    public static int maxSumTwoNoOverlapExtraSpaceOptimized() {
+        int[] arr = { 3, 8, 1, 3, 2, 1, 8, 9, 0 };
+        int l = 3;
+        int m = 2;
+        int ans = Integer.MIN_VALUE;
+        for (int i = 1; i < arr.length; i++)// prefix sum array
+            arr[i] += arr[i - 1];
+        int lmax = 0, mmax = 0;
+        lmax = arr[l - 1];
+        mmax = arr[m - 1];
+        ans = arr[l + m - 1];
+        for (int i = l + m; i < arr.length; i++) {
+            lmax = Math.max(lmax, arr[i - m] - arr[i - l - m]);
+            ans = Math.max(ans, lmax + arr[i] - arr[i - m]);
+            mmax = Math.max(mmax, arr[i - l] - arr[i - l - m]);
+            ans = Math.max(ans, mmax + arr[i] - arr[i - l]);
         }
         return ans;
     }

@@ -15,8 +15,11 @@ public class stack {
         // int[] ans = NGELeetcode2();
         // int[] ans = dailyTemperatures();
         // int[] ans = stockSpan();
-        int ans = maxDiffNSRAndNSL();
-        System.out.println(ans);
+        // int ans = maxDiffNSRAndNSL();
+        // largestHistogramArea()
+        // maximalRectangle();
+        // asteroidCollision();
+        // System.out.println(ans);
         // display(ans);
 
     }

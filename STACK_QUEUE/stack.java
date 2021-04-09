@@ -7,6 +7,7 @@ public class stack {
     }
 
     public static void set1() {
+        // CLASS 1
         // int[] ans = NGER();
         // int[] ans = NSER();
         // int[] ans = NGEL();
@@ -19,6 +20,18 @@ public class stack {
         // largestHistogramArea()
         // maximalRectangle();
         // asteroidCollision();
+
+        // CLASS 2
+        // boolean ans=isbalanced();
+        // int ans = longestValidParentheses();
+        // boolean ans = checkForDupParentheses();
+        // minReversalsToMakebalanced();
+        // minAddToMakeValid();
+        // removeKdigits();
+        // longestUnbalancedSubSequence();
+        // firstNegativeInWindowOfKExtraSpace();
+        // firstNegativeInWindowOfKNoExtraSpace();
+
         // System.out.println(ans);
         // display(ans);
 
@@ -200,7 +213,7 @@ public class stack {
         return ans;
     }
 
-    public static int asteroidCollision() {
+    public static int[] asteroidCollision() {
         int[] arr = { 5, 10, -5 };
         Stack<Integer> st = new Stack<>();
 
@@ -225,6 +238,238 @@ public class stack {
         int k = st.size() - 1;
         while (st.size() != 0) {
             ans[k--] = arr[st.pop()];
+        }
+        return ans;
+    }
+
+    public static boolean isbalanced(String str) {
+        Stack<Character> st = new Stack<>();
+        for (int i = 0; i < str.length(); i++) {
+            if (st.size() == 0 || str.charAt(i) == '(' || str.charAt(i) == '[' || str.charAt(i) == '{') {
+                st.push(str.charAt(i));
+            } else if (st.size() > 0) {
+                if (str.charAt(i) == ')' && st.peek() != '(')
+                    return false;
+                if (str.charAt(i) == ']' && st.peek() != '[')
+                    return false;
+                if (str.charAt(i) == '}' && st.peek() != '{')
+                    return false;
+                st.pop();
+            }
+        }
+        return st.size() == 0;
+    }
+
+    public static int longestValidParentheses() {
+        String str = ")()())";
+        int ans = 0;
+        Stack<Integer> st = new Stack<>();
+        st.push(-1);
+        for (int i = 0; i < str.length(); i++) {
+            if (st.size() == 1) {
+                st.push(i);
+                continue;
+            }
+            char coming = str.charAt(i);
+            char top = str.charAt(st.peek());
+            if (coming == ')' && top == '(') {
+                st.pop();
+            } else if (coming == '[' && top == ']') {
+                st.pop();
+            } else if (coming == '{' && top == '}') {
+                st.pop();
+            } else {
+                st.push(i);
+            }
+            ans = Math.max(ans, i - st.peek());
+        }
+        return ans;
+    }
+
+    public static boolean checkForDupParentheses() {
+        String str = "{([(a+b)]+((c+d)))}";
+        Stack<Character> st = new Stack<>();
+        int dup = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (st.size() == 0) {
+                st.push(str.charAt(i));
+                continue;
+            }
+            if (str.charAt(i) == ')') {
+                int pop = 1;
+                while (st.pop() != '(') {
+                    pop++;
+                }
+                if (pop == 1)
+                    dup++;
+            } else if (str.charAt(i) == ']') {
+                int pop = 1;
+                while (st.pop() != '[') {
+                    pop++;
+                }
+                if (pop == 1)
+                    dup++;
+            } else if (str.charAt(i) == '}') {
+                int pop = 1;
+                while (st.pop() != '{') {
+                    pop++;
+                }
+                if (pop == 1)
+                    dup++;
+            } else {
+                st.push(str.charAt(i));
+            }
+        }
+        System.out.println(dup);
+        return dup != 0;
+    }
+
+    public static int minReversalsToMakebalanced() {
+        String str = "}{{}}{{{";
+        int open = 0, close = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '{') {
+                open++;
+            } else {
+                if (open > 0)
+                    open--;
+                else
+                    close++;
+            }
+        }
+        if ((open + close) % 2 != 0)
+            return -1;
+        return (int) (Math.ceil(open * 1.0 / 2) + Math.ceil(close * 1.0 / 2));
+    }
+
+    public static int minAddToMakeValid(String str) {
+        int open = 0, close = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '(') {
+                open++;
+            } else {
+                if (open > 0)
+                    open--;
+                else
+                    close++;
+            }
+        }
+        return open + close;
+    }
+
+    public static String removeKdigits() {
+
+        String str = "1432219";
+        int k = 3;
+
+        Stack<Integer> st = new Stack<>();
+        for (int i = 0; i < str.length(); i++) {
+            int val = str.charAt(i) - '0';
+            if (st.size() == 0) {
+                st.push(val);
+                continue;
+            }
+            while (st.size() > 0 && st.peek() > val && k != 0) {
+                st.pop();
+                k--;
+            }
+            st.push(val);
+        }
+        while (k != 0) {
+            st.pop();
+            k--;
+        }
+
+        StringBuilder sb = new StringBuilder(st.size());
+
+        while (st.size() != 0) {
+            sb.append((char) (st.pop() + '0'));
+        }
+        int idx = sb.length() - 1;
+
+        while (idx > 0 && sb.charAt(idx) == '0') {// skip starting zeroes
+            sb.deleteCharAt(sb.length() - 1);
+            idx--;
+        }
+
+        if (sb.length() == 0)// "10" and k=2
+            return "0";
+
+        return sb.reverse().toString();
+    }
+
+    public static int longestUnbalancedSubSequence() {
+        String str = "{{{}]}";
+        if (!isbalanced(str))
+            return 0;
+        return str.length() == 0 ? -1 : 1;
+    }
+
+    public static void firstNegativeInWindowOfKExtraSpace() {
+        int[] arr = { -8, -5, -2, 1 };
+        int k = 2;
+        int[] help = new int[k];
+        int[] ans = new int[arr.length - k + 1];
+        int i = 0, j = 0;
+        int cn = 0;
+        // preprocessing for k-1 elements
+        for (int pt = 0; pt < k - 1; pt++) {
+            if (arr[pt] < 0) {
+                help[j++] = arr[pt];
+                cn++;
+            }
+        }
+        for (int pt = k - 1; pt < arr.length; pt++) {
+            // include
+            if (arr[pt] < 0) {
+                help[j] = arr[pt];
+                j = (j + 1) % k;
+                cn++;
+            }
+            // update answer
+            if (cn != 0) {
+                ans[pt - k + 1] = help[i];
+                if (arr[pt - k + 1] < 0) {
+                    i = (i + 1) % k;
+                    cn--;
+                }
+            }
+        }
+        for (int ele : ans) {
+            System.out.print(ele + " ");
+        }
+    }
+
+    public static void firstNegativeInWindowOfKNoExtraSpace() {
+        int[] arr = { -8, -5, -2, 1 };
+        int k = 2;
+        int[] ans = new int[arr.length - k + 1];
+        int negidx = arr.length;
+        for (int i = arr.length - 1; i > arr.length - k; i--) {
+            if (arr[i] < 0)
+                negidx = i;
+        }
+        for (int i = arr.length - k; i >= 0; i--) {
+            if (arr[i] < 0)
+                negidx = i;
+            if (negidx < i + k) {
+                ans[i] = arr[negidx];
+            }
+        }
+        for (int ele : ans) {
+            System.out.print(ele + " ");
+        }
+    }
+
+    public static int maxSumOfSmallestAndSecondSmallestOfAllSubarray() {
+        int[] arr = { 4, 3, 1, 5, 6 };
+        if (arr.length == 0)
+            return 0;
+        if (arr.length == 1)
+            return 2 * arr[0];
+        int ans = Integer.MIN_VALUE;
+        for (int i = 1; i < arr.length; i++) {
+            ans = Math.max(ans, Math.abs(arr[i] + arr[i - 1]));
         }
         return ans;
     }
